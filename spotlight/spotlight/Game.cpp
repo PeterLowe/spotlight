@@ -22,6 +22,7 @@ Game::Game() :
 {
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
+	setupVertexArray(); // initialise vertext array and other data
 }
 
 /// <summary>
@@ -224,4 +225,17 @@ void Game::setupSprite()
 	m_cirleSpotlight.setPosition(0.0f, 0.0f);
 	m_cirleSpotlight.setOrigin(2*RADIUS, 2*RADIUS);
 	m_cirleSpotlight.setTexture(&m_caveTexture);
+
+}
+
+void Game::setupVertexArray()
+{
+	float angle = M_2_PI / static_cast<float>(NO_POINTS);
+	
+	for (int i = 0; i < NO_POINTS; i++)
+	{
+		
+		m_offsets[i].x = std::cos(angle * static_cast<float>(i)) * RADIUS;
+		m_offsets[i].y = std::sin(angle * static_cast<float>(i)) * RADIUS;
+	}
 }
