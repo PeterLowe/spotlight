@@ -22,7 +22,7 @@ Game::Game() :
 {
 	setupFontAndText(); // load font 
 	setupSprite(); // load texture
-	setupVertexArray(); // initialise vertext array and other data
+	setupVertexArray(sf::Vector2f{ 100.0f,100.0f }); // initialise vertext array and other data
 }
 
 /// <summary>
@@ -121,6 +121,8 @@ void Game::processMouseDown(sf::Event t_event)
 	
 	if (sf::Mouse::Button::Left == t_event.mouseButton.button)
 	{
+		sf::Vector2f point{ static_cast<float>(t_event.mouseButton.x) ,static_cast<float>(t_event.mouseButton.y) };
+		setupVertexArray(point);
 		m_circleOn = true;
 	
 		area.left = t_event.mouseButton.x - RADIUSi;
@@ -143,6 +145,8 @@ void Game::processMouseMove(sf::Event t_event)
 		sf::IntRect area{ 0,0,SPOTLIGHT_WIDTH,SPOTLIGHT_HEIGHT };
 		if (m_circleOn)
 		{
+			sf::Vector2f point{ static_cast<float>(t_event.mouseMove.x) ,static_cast<float>(t_event.mouseMove.y) };
+			setupVertexArray(point);
 			area.left = t_event.mouseMove.x - RADIUSi;
 			area.top = t_event.mouseMove.y - RADIUSi;
 			m_cirleSpotlight.setTextureRect(area);
@@ -183,9 +187,11 @@ void Game::render()
 	m_window.draw(m_caveSprite);
 	if (m_circleOn)
 	{
-		m_window.draw(m_cirleSpotlight);
+		//m_window.draw(m_cirleSpotlight);
+		m_window.draw(m_vertexSpotlight, &m_caveTexture);
 	}
 	m_window.draw(m_welcomeMessage);
+	
 	m_window.display();
 }
 
@@ -228,14 +234,43 @@ void Game::setupSprite()
 
 }
 
-void Game::setupVertexArray()
+
+/// <summary>
+/// creATE ELEMENTS IN VERTEX ARRAY
+/// use cos for x and sin for y to get point on cirle
+/// add these offsets to parameter point to define positions
+/// texture co ordinates will be the same as position.
+/// first point is centre solour white
+/// add outside points color DARK
+///then add first outside point to close circle.
+/// </summary>
+/// <param name="t_point"></param>
+void Game::setupVertexArray(sf::Vector2f t_point)
 {
-	float angle = M_2_PI / static_cast<float>(NO_POINTS);
-	
+	float angle = (M_PI * 2.0f) / static_cast<float>(NO_POINTS);
+	sf::Vertex vertex;
+	sf::Vector2f point = t_point;
+
+	m_vertexSpotlight.clear();
 	for (int i = 0; i < NO_POINTS; i++)
 	{
-		
 		m_offsets[i].x = std::cos(angle * static_cast<float>(i)) * RADIUS;
 		m_offsets[i].y = std::sin(angle * static_cast<float>(i)) * RADIUS;
 	}
+
+	vertex.color = sf::Color::White;
+	vertex.position = point;
+	vertex.texCoords = point;
+	m_vertexSpotlight.append(vertex);
+	vertex.color = DARK;
+	for (int i = 0; i < NO_POINTS; i++)
+	{
+		vertex.position = point + m_offsets[i];
+		vertex.texCoords = point + m_offsets[i];
+		m_vertexSpotlight.append(vertex);
+	}
+	vertex.position = point + m_offsets[0];
+	vertex.texCoords = point + m_offsets[0];
+	m_vertexSpotlight.append(vertex);
+	
 }

@@ -17,13 +17,13 @@
 
 
 
-const float RADIUS = 75.0f; // radius of spotlight
-const sf::Color DARK{ 55,55,55,255 }; // colour used to dim background to lighlight spotlight
+const float RADIUS = 175.0f; // radius of spotlight
+const sf::Color DARK{ 55,55,75,255 }; // colour used to dim background to lighlight spotlight
 const int RADIUSi = static_cast<int>(RADIUS); // radius in integer used in intRect
 const int SPOTLIGHT_WIDTH = static_cast<int>(RADIUS * 2); // width of spotlight for texture intRect
 const int SPOTLIGHT_HEIGHT = static_cast<int>(RADIUS * 2); // same
 
-const int NO_POINTS = 6;
+const int NO_POINTS = 30;
 
 class Game
 {
@@ -46,7 +46,7 @@ private:
 	
 	void setupFontAndText();
 	void setupSprite();
-	void setupVertexArray();
+	void setupVertexArray(sf::Vector2f t_point);
 
 	sf::RenderWindow m_window; // main SFML window
 	sf::Font m_ArialBlackfont; // font used by message
@@ -59,7 +59,7 @@ private:
 	sf::VertexArray m_vertexSpotlight{ sf::TriangleFan }; // spotlight vertex array
 
 	bool m_circleOn{ false }; // control is spotlight is on
-	sf::Vector2f m_offsets[NO_POINTS];
+	sf::Vector2f m_offsets[NO_POINTS]; // plus one for centre
 	
 
 };
